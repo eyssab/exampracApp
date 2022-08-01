@@ -5,13 +5,11 @@ import android.widget.Button;
 import android.widget.ToggleButton;
 
 public class answerButton {
-    boolean selected;
-    String letter;
+    int letterNumber;
     ToggleButton button;
 
-    public answerButton(boolean selected, String letter, ToggleButton button) {
-        this.selected = selected;
-        this.letter = letter;
+    public answerButton(int letterNumber, ToggleButton button) {
+        this.letterNumber = letterNumber;
         this.button = button;
     }
 
@@ -20,27 +18,31 @@ public class answerButton {
     }
 
     public void onClick(View v) {
-        System.out.println(button.getText() + " " + button.getId() + "activated?: " + button.isChecked());
-        selected = true;
+        if(!button.isChecked()) {
+            button.setChecked(true);
+            System.out.println(button.toString());
+        }else{
+            button.setChecked(false);
+            System.out.println(button.toString());
+        }
     }
 
     public void setButton(ToggleButton button) {
         this.button = button;
     }
 
-    public boolean isSelected() {
-        return selected;
+    public int getLetterNumber() {
+        return letterNumber;
     }
 
-    public void setSelected(boolean selected) {
-        this.selected = selected;
+    public void setLetterNumber(int letterNumber) {
+        this.letterNumber = letterNumber;
     }
 
-    public String getLetter() {
-        return letter;
-    }
-
-    public void setLetter(String letter) {
-        this.letter = letter;
+    @Override
+    public String toString() {
+        //letterNumber can be converted to letter when reading file
+        return  "," + letterNumber +
+                "," + button.isChecked();
     }
 }

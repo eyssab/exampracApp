@@ -30,7 +30,7 @@ public class GenerateExamActivity extends AppCompatActivity {
 
     public void onGenerateBtnClick(View view) {
         if(titleInput.getText().toString().equals("") || finOptionInput.getText().toString().equals("") || Integer.valueOf(minutesInput.getText().toString()).equals("") || Integer.valueOf(questionsInput.getText().toString()).equals("")){
-            showToast("Fill all forms firsdt");
+            showToast("Fill all forms first");
         }else {
             title = titleInput.getText().toString();
             finOption = finOptionInput.getText().toString();

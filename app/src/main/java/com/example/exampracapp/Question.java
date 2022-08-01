@@ -4,12 +4,12 @@ import java.util.ArrayList;
 
 public class Question {
     public int number;
-    public String correctLetter;
+    public int correctLetterElement;
     public answerButton[] buttons;
 
-    public Question(int number, String correctLetter, answerButton[] buttons){
+    public Question(int number, int correctLetterElement, answerButton[] buttons){
         this.number = number;
-        this.correctLetter = correctLetter;
+        this.correctLetterElement = correctLetterElement;
         this.buttons = buttons;
     }
 
@@ -29,11 +29,11 @@ public class Question {
         this.number = number;
     }
 
-    public String getCorrectLetter() {
-        return correctLetter;
+    public int getCorrectLetter() {
+        return correctLetterElement;
     }
 
-    public void setCorrectLetter(String correctLetter) {
-        this.correctLetter = correctLetter;
+    public void setCorrectLetter(int correctLetterElement) {
+        this.correctLetterElement = correctLetterElement;
     }
 }

@@ -7,6 +7,7 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -15,11 +16,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.lang.reflect.Array;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class TakeExamActivity extends AppCompatActivity {
+public class TakeExamActivity extends AppCompatActivity implements Serializable {
 
     ScrollView scrollView;
     LinearLayout linearLayout;
@@ -30,9 +39,12 @@ public class TakeExamActivity extends AppCompatActivity {
     int timerMins;
     String title;
     String finOption;
-    String options = "ABCDEFG";
     int answers;
     int width = Resources.getSystem().getDisplayMetrics().widthPixels;
+
+    //STORAGE
+    private final static String FILE_NAME = "example.txt";
+    String finLine;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +82,7 @@ public class TakeExamActivity extends AppCompatActivity {
         //Initialize qArray based on user inputted question amount
         qArray = new Question[numQuestions];
         for(int i = 0; i<qArray.length; i++){
-            qArray[i] = new Question(i+1, "", null);
+            qArray[i] = new Question(i+1, 0, null);
             addQuestion(qArray[i]);
         }
     }
@@ -92,10 +104,11 @@ public class TakeExamActivity extends AppCompatActivity {
 
         //Generate answer button based on finOption
         for(int i = 0; i < answers;i++){
-            buttonS[i] = new answerButton(false, options.substring(i,i+1), new ToggleButton(this));
-            buttonS[i].getButton().setText(options.substring(i,i+1));
-            buttonS[i].getButton().setTextOn(options.substring(i,i+1));
-            buttonS[i].getButton().setTextOff(options.substring(i,i+1));
+            buttonS[i] = new answerButton( ((int) 'A' + i), new ToggleButton(this));
+            char number2Letter = (char)('A' + i);
+            buttonS[i].getButton().setText(Character.toString(number2Letter));
+            buttonS[i].getButton().setTextOn(Character.toString(number2Letter));
+            buttonS[i].getButton().setTextOff(Character.toString(number2Letter));
             buttonS[i].getButton().setLayoutParams(new LinearLayout.LayoutParams((width-100)/answers, LinearLayout.LayoutParams.WRAP_CONTENT));
 
             linearInnerLayout.addView(buttonS[i].button);
@@ -108,6 +121,53 @@ public class TakeExamActivity extends AppCompatActivity {
         linearLayout.addView(linearInnerLayout);
     }
 
+    public void save(View view){
+        FileOutputStream fos = null;
+
+        try {
+            fos = openFileOutput(FILE_NAME, MODE_PRIVATE);
+            fos.write(finLine.getBytes());
+
+            System.out.println("Saved to " + getFilesDir() + "/" + FILE_NAME);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            if(fos != null) {
+                try {
+                    fos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public void onSaveBtnClick(View view) {
+        finLine = title + "," + timerMins + "," + numQuestions + "," + answers + "\n";
+        for(int i = 0; i < numQuestions; i++){
+            addWholeString(i);
+        }
+        save(view);
+        openActivity4();
+    }
+
+    public void addWholeString(int i){
+        //Run through all of qArray[i] and get all data of each button together into allButtons
+        String allButtons = "";
+
+        for(int x = 0; x<answers; x++){
+            allButtons += qArray[i].getButtons()[x].toString();
+        }
+
+        //title, mins, #questions(newline)
+        //question#, 65, buttonData(newline)
+        //call to add each questions data
+        finLine += qArray[i].number
+                + "," + qArray[i].correctLetterElement + allButtons + "\n";
+    }
+
     public void onDoneBtnClick(View view) {
         //Send all Data to each activity until it reaches home page
         openActivity4();
@@ -115,11 +175,14 @@ public class TakeExamActivity extends AppCompatActivity {
 
     //Sending numQuestions, timerMins, title, and the whole questionArray for grading in next Activity
     public void openActivity4() {
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra("numQuestions", numQuestions);
-        intent.putExtra("timerMins", timerMins);
-        intent.putExtra("title", title);
-        intent.putExtra("questionArray", qArray);
+        Intent intent = new Intent(this, GradingPicker.class);
         startActivity(intent);
     }
+
+    //Sending numQuestions, timerMins, title, and the whole questionArray for grading in next Activity
+    public void openMainActivity() {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+    }
+
 }
