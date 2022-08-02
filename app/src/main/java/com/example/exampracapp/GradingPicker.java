@@ -96,6 +96,6 @@ public class GradingPicker extends AppCompatActivity {
     }
 
     public void onBtnClick(View view) {
-        System.out.println("new thing: " + qArray[3].getNumber());
+
     }
 }

@@ -6,14 +6,9 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
-import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import java.io.BufferedReader;
@@ -22,13 +17,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.Serializable;
-import java.lang.reflect.Array;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Objects;
 
-public class TakeExamActivity extends AppCompatActivity implements Serializable {
+public class TakeExamActivity extends AppCompatActivity{
 
     ScrollView scrollView;
     LinearLayout linearLayout;
@@ -43,7 +33,7 @@ public class TakeExamActivity extends AppCompatActivity implements Serializable 
     int width = Resources.getSystem().getDisplayMetrics().widthPixels;
 
     //STORAGE
-    private final static String FILE_NAME = "example.txt";
+    private static String fileName;
     String finLine;
 
     @Override
@@ -51,6 +41,8 @@ public class TakeExamActivity extends AppCompatActivity implements Serializable 
         //auto generated code
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_take_exam);
+
+        TextView titleView = findViewById(R.id.titleText);
 
         //Question overall scrollview
         scrollView = (ScrollView) findViewById(R.id.pastExamScroll);
@@ -66,24 +58,38 @@ public class TakeExamActivity extends AppCompatActivity implements Serializable 
             timerMins = bundle.getInt("timerMins");
             title = bundle.getString("title");
             finOption = bundle.getString("finOption");
+            fileName = bundle.getString("fileName");
         }
 
-        //Setting Title
-        TextView titleView = findViewById(R.id.titleText);
-        titleView.setText(title);
+        //Opening saved file and generating exam
+        if(fileName != null){
+            load(fileName);
 
-        //find amount of answer choices needed and assigned to int answers
-        char finOptionchar = finOption.charAt(0);
-        while(finOptionchar >= 'A'){
-            finOptionchar--;
-            answers++;
-        }
+            titleView.setText(title);
+            for (int i = 0; i < qArray.length; i++) {
+                qArray[i] = new Question(i + 1, 0, null);
+                addQuestion(qArray[i]);
+            }
+        }else {
+            //Generating new exam from scratch
+            fileName = title + ".txt";
 
-        //Initialize qArray based on user inputted question amount
-        qArray = new Question[numQuestions];
-        for(int i = 0; i<qArray.length; i++){
-            qArray[i] = new Question(i+1, 0, null);
-            addQuestion(qArray[i]);
+            //Setting Title
+            titleView.setText(title);
+
+            //find amount of answer choices needed and assigned to int answers
+            char finOptionchar = finOption.charAt(0);
+            while (finOptionchar >= 'A') {
+                finOptionchar--;
+                answers++;
+            }
+
+            //Initialize qArray based on user inputted question amount
+            qArray = new Question[numQuestions];
+            for (int i = 0; i < qArray.length; i++) {
+                qArray[i] = new Question(i + 1, 0, null);
+                addQuestion(qArray[i]);
+            }
         }
     }
 
@@ -125,10 +131,10 @@ public class TakeExamActivity extends AppCompatActivity implements Serializable 
         FileOutputStream fos = null;
 
         try {
-            fos = openFileOutput(FILE_NAME, MODE_PRIVATE);
+            fos = openFileOutput(fileName, MODE_PRIVATE);
             fos.write(finLine.getBytes());
 
-            System.out.println("Saved to " + getFilesDir() + "/" + FILE_NAME);
+            System.out.println("Saved to " + getFilesDir() + "/" + fileName);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -144,13 +150,74 @@ public class TakeExamActivity extends AppCompatActivity implements Serializable 
         }
     }
 
+    public void load(String FILE_NAME) {
+        FileInputStream fis = null;
+
+        try {
+            fis = openFileInput(FILE_NAME);
+            InputStreamReader isr = new InputStreamReader(fis);
+            BufferedReader br = new BufferedReader(isr);
+
+            String[] firstLineArray;
+
+            int i = 0;
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (i != 0) {
+                    firstLineArray = line.split(",");
+                    //System.out.println(line);
+
+                    answerButton answerButtons[] = new answerButton[answers];
+
+                    Question newQuestion = new Question(Integer.parseInt(firstLineArray[0]),
+                            Integer.parseInt(firstLineArray[1]),
+                            answerButtons);
+
+                    int currLineElement = 2;
+                    while(currLineElement < firstLineArray.length-1){
+                        ToggleButton newTogBtn = new ToggleButton(this);
+                        newTogBtn.setText(firstLineArray[currLineElement+1]);
+                        answerButtons[i] = new answerButton( Integer.parseInt(firstLineArray[currLineElement]), newTogBtn);
+                        currLineElement+=2;
+                    }
+
+                    newQuestion.setButtons(answerButtons);
+                    qArray[i-1] = newQuestion;
+                    i++;
+                } else {
+                    firstLineArray = line.split(",");
+                    title = firstLineArray[0];
+                    timerMins = Integer.parseInt(firstLineArray[1]);
+                    numQuestions = Integer.parseInt(firstLineArray[2]);
+                    System.out.println(numQuestions);
+                    answers = Integer.parseInt(firstLineArray[3]);
+                    qArray = new Question[numQuestions];
+                    i++;
+                }
+            }
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (fis != null) {
+                try {
+                    fis.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
     public void onSaveBtnClick(View view) {
         finLine = title + "," + timerMins + "," + numQuestions + "," + answers + "\n";
         for(int i = 0; i < numQuestions; i++){
             addWholeString(i);
         }
         save(view);
-        openActivity4();
+        openMainActivity();
     }
 
     public void addWholeString(int i){
@@ -182,6 +249,7 @@ public class TakeExamActivity extends AppCompatActivity implements Serializable 
     //Sending numQuestions, timerMins, title, and the whole questionArray for grading in next Activity
     public void openMainActivity() {
         Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("title", title);
         startActivity(intent);
     }
 
