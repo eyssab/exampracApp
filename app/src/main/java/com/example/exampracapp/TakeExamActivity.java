@@ -13,10 +13,10 @@ import android.widget.ToggleButton;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 public class TakeExamActivity extends AppCompatActivity{
 
@@ -24,7 +24,7 @@ public class TakeExamActivity extends AppCompatActivity{
     LinearLayout linearLayout;
 
     //Array of Questions to each hold(questionNumber, selectedLetter, and correctLetter)
-    Question qArray[];
+    Question[] qArray;
     int numQuestions;
     int timerMins;
     String title;
@@ -35,6 +35,7 @@ public class TakeExamActivity extends AppCompatActivity{
     //STORAGE
     private static String fileName;
     String finLine;
+    ArrayList<Boolean> questionChecksArray;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,12 +64,14 @@ public class TakeExamActivity extends AppCompatActivity{
 
         //Opening saved file and generating exam
         if(fileName != null){
+
+            questionChecksArray = new ArrayList<>();
             load(fileName);
 
             titleView.setText(title);
             for (int i = 0; i < qArray.length; i++) {
                 qArray[i] = new Question(i + 1, 0, null);
-                addQuestion(qArray[i]);
+                addQuestion(qArray[i], i);
             }
         }else {
             //Generating new exam from scratch
@@ -88,12 +91,12 @@ public class TakeExamActivity extends AppCompatActivity{
             qArray = new Question[numQuestions];
             for (int i = 0; i < qArray.length; i++) {
                 qArray[i] = new Question(i + 1, 0, null);
-                addQuestion(qArray[i]);
+                addQuestion(qArray[i], i);
             }
         }
     }
 
-    public void addQuestion(Question que){
+    public void addQuestion(Question que, int qNumber){
         //Creates each question HORIZONTAL scrollview within the main VERTICAL scrollview to render each question properly
         LinearLayout linearInnerLayout = new LinearLayout(this);
         linearInnerLayout.setOrientation(LinearLayout.HORIZONTAL);
@@ -105,8 +108,7 @@ public class TakeExamActivity extends AppCompatActivity{
         linearInnerLayout.addView(numb);
 
         //button array with answer amount of elements
-        answerButton buttonS[] = new answerButton[answers];
-
+        answerButton[] buttonS = new answerButton[answers];
 
         //Generate answer button based on finOption
         for(int i = 0; i < answers;i++){
@@ -115,6 +117,7 @@ public class TakeExamActivity extends AppCompatActivity{
             buttonS[i].getButton().setText(Character.toString(number2Letter));
             buttonS[i].getButton().setTextOn(Character.toString(number2Letter));
             buttonS[i].getButton().setTextOff(Character.toString(number2Letter));
+            buttonS[i].getButton().setChecked(questionChecksArray.get(i + answers * qNumber));
             buttonS[i].getButton().setLayoutParams(new LinearLayout.LayoutParams((width-100)/answers, LinearLayout.LayoutParams.WRAP_CONTENT));
 
             linearInnerLayout.addView(buttonS[i].button);
@@ -135,11 +138,9 @@ public class TakeExamActivity extends AppCompatActivity{
             fos.write(finLine.getBytes());
 
             System.out.println("Saved to " + getFilesDir() + "/" + fileName);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             if(fos != null) {
                 try {
                     fos.close();
@@ -150,57 +151,37 @@ public class TakeExamActivity extends AppCompatActivity{
         }
     }
 
-    public void load(String FILE_NAME) {
+    public void load(String fileName) {
         FileInputStream fis = null;
 
         try {
-            fis = openFileInput(FILE_NAME);
+            fis = openFileInput(fileName);
             InputStreamReader isr = new InputStreamReader(fis);
             BufferedReader br = new BufferedReader(isr);
-
-            String[] firstLineArray;
-
-            int i = 0;
+            String[] lineArray;
             String line;
-            while ((line = br.readLine()) != null) {
-                if (i != 0) {
-                    firstLineArray = line.split(",");
-                    //System.out.println(line);
+            boolean isFirstLine = true;
 
-                    answerButton answerButtons[] = new answerButton[answers];
-
-                    Question newQuestion = new Question(Integer.parseInt(firstLineArray[0]),
-                            Integer.parseInt(firstLineArray[1]),
-                            answerButtons);
-
-                    int currLineElement = 2;
-                    while(currLineElement < firstLineArray.length-1){
-                        ToggleButton newTogBtn = new ToggleButton(this);
-                        newTogBtn.setText(firstLineArray[currLineElement+1]);
-                        answerButtons[i] = new answerButton( Integer.parseInt(firstLineArray[currLineElement]), newTogBtn);
-                        currLineElement+=2;
+            while((line = br.readLine()) != null){
+                lineArray = line.split(",");
+                if (!isFirstLine) {
+                    for(int i = 0; i < answers; i++) {
+                        questionChecksArray.add(Boolean.valueOf(lineArray[i]));
                     }
-
-                    newQuestion.setButtons(answerButtons);
-                    qArray[i-1] = newQuestion;
-                    i++;
                 } else {
-                    firstLineArray = line.split(",");
-                    title = firstLineArray[0];
-                    timerMins = Integer.parseInt(firstLineArray[1]);
-                    numQuestions = Integer.parseInt(firstLineArray[2]);
-                    System.out.println(numQuestions);
-                    answers = Integer.parseInt(firstLineArray[3]);
+                    //Parse first line for data
+                    lineArray = line.split(",");
+                    title = lineArray[0];
+                    timerMins = Integer.parseInt(lineArray[1]);
+                    numQuestions = Integer.parseInt(lineArray[2]);
+                    answers = Integer.parseInt(lineArray[3]);
                     qArray = new Question[numQuestions];
-                    i++;
+                    isFirstLine = false;
                 }
             }
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
+        } finally{
             if (fis != null) {
                 try {
                     fis.close();
@@ -225,14 +206,15 @@ public class TakeExamActivity extends AppCompatActivity{
         String allButtons = "";
 
         for(int x = 0; x<answers; x++){
-            allButtons += qArray[i].getButtons()[x].toString();
+            if(x != answers-1){
+                allButtons += qArray[i].getButtons()[x].getButton().isChecked() + ",";
+            }else{
+                allButtons += qArray[i].getButtons()[x].getButton().isChecked();
+            }
         }
 
-        //title, mins, #questions(newline)
-        //question#, 65, buttonData(newline)
-        //call to add each questions data
-        finLine += qArray[i].number
-                + "," + qArray[i].correctLetterElement + allButtons + "\n";
+        //allows to see checked buttons from save file
+        finLine += allButtons + "\n";
     }
 
     public void onDoneBtnClick(View view) {

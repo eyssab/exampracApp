@@ -42,7 +42,6 @@ public class answerButton {
     @Override
     public String toString() {
         //letterNumber can be converted to letter when reading file
-        return  "," + letterNumber +
-                "," + button.isChecked();
+        return button.isChecked() + ",";
     }
 }
