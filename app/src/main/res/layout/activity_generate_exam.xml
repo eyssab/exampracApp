@@ -23,8 +23,8 @@
 
     <EditText
         android:id="@+id/titleInput"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="171dp"
+        android:layout_height="44dp"
         android:ems="10"
         android:inputType="textPersonName"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -36,35 +36,35 @@
 
     <TextView
         android:id="@+id/TimeText"
-        android:layout_width="203dp"
-        android:layout_height="38dp"
-        android:text="Exam Length(minutes)"
+        android:layout_width="257dp"
+        android:layout_height="34dp"
+        android:text="Exam Length(minutes):"
         android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.264"
+        app:layout_constraintHorizontal_bias="0.318"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.266" />
+        app:layout_constraintVertical_bias="0.259" />
 
     <EditText
         android:id="@+id/timeInput"
-        android:layout_width="102dp"
-        android:layout_height="41dp"
+        android:layout_width="53dp"
+        android:layout_height="46dp"
         android:ems="10"
         android:inputType="number"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.834"
+        app:layout_constraintHorizontal_bias="0.857"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.262" />
+        app:layout_constraintVertical_bias="0.251" />
 
     <TextView
         android:id="@+id/questionNumberText"
-        android:layout_width="118dp"
+        android:layout_width="152dp"
         android:layout_height="39dp"
         android:text="# Questions:"
         android:textAlignment="center"
@@ -72,51 +72,51 @@
         android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.187"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.358" />
-
-    <EditText
-        android:id="@+id/questionNumberInput"
-        android:layout_width="102dp"
-        android:layout_height="41dp"
-        android:ems="10"
-        android:inputType="number"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.559"
+        app:layout_constraintHorizontal_bias="0.193"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.356" />
 
+    <EditText
+        android:id="@+id/questionNumberInput"
+        android:layout_width="77dp"
+        android:layout_height="44dp"
+        android:ems="10"
+        android:inputType="number"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.616"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.352" />
+
     <TextView
         android:id="@+id/optionSizeText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="196dp"
+        android:layout_height="41dp"
         android:text="Option Size: A->"
         android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.203"
+        app:layout_constraintHorizontal_bias="0.226"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.45" />
+        app:layout_constraintVertical_bias="0.464" />
 
     <EditText
         android:id="@+id/optionSizeInput"
-        android:layout_width="93dp"
-        android:layout_height="50dp"
+        android:layout_width="55dp"
+        android:layout_height="46dp"
         android:ems="10"
         android:inputType="textPersonName"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.616"
+        app:layout_constraintHorizontal_bias="0.703"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.446" />
+        app:layout_constraintVertical_bias="0.456" />
 
     <Button
         android:id="@+id/generateBtn"

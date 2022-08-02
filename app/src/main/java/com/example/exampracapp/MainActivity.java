@@ -48,10 +48,12 @@ public class MainActivity extends AppCompatActivity {
         //Show past exams by looking at files directory
         File file = new File("/data/user/0/com.example.exampracapp/files");
         String arr[]=file.list();
-        for(int i = 0; i < arr.length; i++) {
-            if (arr[i].endsWith(".txt")) {
-                System.out.println(arr[i]);
-                addPastExam(arr[i]);
+        if(arr != null) {
+            for (int i = 0; i < arr.length; i++) {
+                if (arr[i].endsWith(".txt")) {
+                    System.out.println(arr[i]);
+                    addPastExam(arr[i]);
+                }
             }
         }
     }
