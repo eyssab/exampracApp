@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void addPastExam(String title){
         Button but = new Button(this);
-        but.setText(title);
+        but.setText(title.substring(0,title.length()-4));
         linearLayout.addView(but);
         but.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {

@@ -36,6 +36,7 @@ public class TakeExamActivity extends AppCompatActivity{
     private static String fileName;
     String finLine;
     ArrayList<Boolean> questionChecksArray;
+    boolean openingSave = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +65,7 @@ public class TakeExamActivity extends AppCompatActivity{
 
         //Opening saved file and generating exam
         if(fileName != null){
-
+            openingSave = true;
             questionChecksArray = new ArrayList<>();
             load(fileName);
 
@@ -73,6 +74,7 @@ public class TakeExamActivity extends AppCompatActivity{
                 qArray[i] = new Question(i + 1, 0, null);
                 addQuestion(qArray[i], i);
             }
+
         }else {
             //Generating new exam from scratch
             fileName = title + ".txt";
@@ -117,7 +119,9 @@ public class TakeExamActivity extends AppCompatActivity{
             buttonS[i].getButton().setText(Character.toString(number2Letter));
             buttonS[i].getButton().setTextOn(Character.toString(number2Letter));
             buttonS[i].getButton().setTextOff(Character.toString(number2Letter));
-            buttonS[i].getButton().setChecked(questionChecksArray.get(i + answers * qNumber));
+            if(openingSave == true) {
+                buttonS[i].getButton().setChecked(questionChecksArray.get(i + answers * qNumber));
+            }
             buttonS[i].getButton().setLayoutParams(new LinearLayout.LayoutParams((width-100)/answers, LinearLayout.LayoutParams.WRAP_CONTENT));
 
             linearInnerLayout.addView(buttonS[i].button);
