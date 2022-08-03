@@ -7,95 +7,48 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ToggleButton;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Scanner;
-
 public class GradingPicker extends AppCompatActivity {
 
-    int numQuestions;
-    int timerMins;
-    String title;
-    Question qArray[];
-    int answers;
+    Class class2Open;
 
-    private static final String FILE_NAME = "example.txt";
+    ToggleButton autoBtn;
+    ToggleButton manualBtn;
+    String fileName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_grading_picker);
+        autoBtn = findViewById(R.id.autoGradeSelection);
+        manualBtn  = findViewById(R.id.manualGradeSelection);
 
-        load();
-    }
-
-    public void load() {
-        FileInputStream fis = null;
-
-        try {
-            fis = openFileInput(FILE_NAME);
-            InputStreamReader isr = new InputStreamReader(fis);
-            BufferedReader br = new BufferedReader(isr);
-
-            String[] firstLineArray;
-
-            int i = 0;
-            String line;
-            while ((line = br.readLine()) != null) {
-                if (i != 0) {
-                    firstLineArray = line.split(",");
-                    //System.out.println(line);
-
-                    answerButton answerButtons[] = new answerButton[answers];
-
-                    Question newQuestion = new Question(Integer.parseInt(firstLineArray[0]),
-                            Integer.parseInt(firstLineArray[1]),
-                            answerButtons);
-
-                    int currLineElement = 2;
-                    while(currLineElement < firstLineArray.length){
-                        ToggleButton newTogBtn = new ToggleButton(this);
-                        newTogBtn.setText(firstLineArray[currLineElement+1]);
-                        answerButtons[i] = new answerButton( Integer.parseInt(firstLineArray[currLineElement]), newTogBtn);
-                        currLineElement+=2;
-                    }
-
-                    newQuestion.setButtons(answerButtons);
-                    qArray[i-1] = newQuestion;
-                    i++;
-                } else {
-                    firstLineArray = line.split(",");
-                    title = firstLineArray[0];
-                    timerMins = Integer.parseInt(firstLineArray[1]);
-                    numQuestions = Integer.parseInt(firstLineArray[2]);
-                    System.out.println(numQuestions);
-                    answers = Integer.parseInt(firstLineArray[3]);
-                    qArray = new Question[numQuestions];
-                    i++;
-                }
-            }
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (fis != null) {
-                try {
-                    fis.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
+        if(bundle != null) {
+            fileName = bundle.getString("fileName");
         }
     }
 
-    public void onBtnClick(View view) {
 
+    public void onManualBtnDown(View view) {
+        if(autoBtn.isChecked()) {
+            autoBtn.setChecked(false);
+        }
+        //SET TO ManualGradeActivity
+        class2Open = MainActivity.class;
+    }
+
+    public void onAutoBtnDown(View view) {
+        if(manualBtn.isChecked()) {
+            manualBtn.setChecked(false);
+        }
+        //SET TO AutoGradeActivity
+        class2Open = MainActivity.class;
+    }
+
+    public void onNextBtnDown(View view) {
+        Intent intent = new Intent(this, class2Open);
+        intent.putExtra("fileName", fileName);
+        startActivity(intent);
     }
 }

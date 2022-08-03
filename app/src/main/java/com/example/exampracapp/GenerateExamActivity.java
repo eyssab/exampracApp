@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -22,10 +21,10 @@ public class GenerateExamActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_generate_exam);
 
-        titleInput = (EditText) findViewById(R.id.titleInput);
-        finOptionInput = (EditText) findViewById(R.id.optionSizeInput);
-        minutesInput = (EditText) findViewById(R.id.timeInput);
-        questionsInput = (EditText) findViewById(R.id.questionNumberInput);
+        titleInput = findViewById(R.id.titleInput);
+        finOptionInput = findViewById(R.id.optionSizeInput);
+        minutesInput = findViewById(R.id.timeInput);
+        questionsInput = findViewById(R.id.questionNumberInput);
     }
 
     public void onGenerateBtnClick(View view) {
@@ -34,8 +33,8 @@ public class GenerateExamActivity extends AppCompatActivity {
         }else {
             title = titleInput.getText().toString();
             finOption = finOptionInput.getText().toString();
-            minutes = Integer.valueOf(minutesInput.getText().toString());
-            questions = Integer.valueOf(questionsInput.getText().toString());
+            minutes = Integer.parseInt(minutesInput.getText().toString());
+            questions = Integer.parseInt(questionsInput.getText().toString());
             openActivity3();
         }
     }

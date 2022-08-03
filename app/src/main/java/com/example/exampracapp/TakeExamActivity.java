@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -49,7 +48,7 @@ public class TakeExamActivity extends AppCompatActivity{
         TextView titleView = findViewById(R.id.titleText);
 
         //Question overall scrollview
-        scrollView = (ScrollView) findViewById(R.id.pastExamScroll);
+        scrollView = findViewById(R.id.pastExamScroll);
         linearLayout = new LinearLayout(this);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         scrollView.addView(linearLayout);
@@ -110,7 +109,6 @@ public class TakeExamActivity extends AppCompatActivity{
         TextView numb = new TextView(this);
         numb.setLayoutParams(new LinearLayout.LayoutParams(60, LinearLayout.LayoutParams.WRAP_CONTENT));
         numb.setText(String.valueOf(que.number));
-        numb.setTextColor(R.color.black);
         linearInnerLayout.addView(numb);
 
         //button array with answer amount of elements
@@ -123,7 +121,7 @@ public class TakeExamActivity extends AppCompatActivity{
             buttonS[i].getButton().setText(Character.toString(number2Letter));
             buttonS[i].getButton().setTextOn(Character.toString(number2Letter));
             buttonS[i].getButton().setTextOff(Character.toString(number2Letter));
-            if(openingSave == true) {
+            if(openingSave) {
                 buttonS[i].getButton().setChecked(questionChecksArray.get(i + answers * qNumber));
             }
             buttonS[i].getButton().setLayoutParams(new LinearLayout.LayoutParams((width-100)/answers, LinearLayout.LayoutParams.WRAP_CONTENT));
@@ -233,6 +231,7 @@ public class TakeExamActivity extends AppCompatActivity{
     //Sending numQuestions, timerMins, title, and the whole questionArray for grading in next Activity
     public void openActivity4() {
         Intent intent = new Intent(this, GradingPicker.class);
+        intent.putExtra("fileName", fileName);
         startActivity(intent);
     }
 
