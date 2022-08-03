@@ -2,8 +2,10 @@ package com.example.exampracapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -98,6 +100,7 @@ public class TakeExamActivity extends AppCompatActivity{
         }
     }
 
+    @SuppressLint("ResourceAsColor")
     public void addQuestion(Question que, int qNumber){
         //Creates each question HORIZONTAL scrollview within the main VERTICAL scrollview to render each question properly
         LinearLayout linearInnerLayout = new LinearLayout(this);
@@ -107,6 +110,7 @@ public class TakeExamActivity extends AppCompatActivity{
         TextView numb = new TextView(this);
         numb.setLayoutParams(new LinearLayout.LayoutParams(60, LinearLayout.LayoutParams.WRAP_CONTENT));
         numb.setText(String.valueOf(que.number));
+        numb.setTextColor(R.color.black);
         linearInnerLayout.addView(numb);
 
         //button array with answer amount of elements
