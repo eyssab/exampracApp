@@ -307,7 +307,7 @@ public class TakeExamActivity extends AppCompatActivity{
     public void openScoreViewActivity() {
         Intent intent = new Intent(this, ScoreViewActivity.class);
         intent.putExtra("title", title);
-        //intent.putExtra("score", score);
+        intent.putExtra("score", score/(double)numQuestions * 100);
         startActivity(intent);
     }
 
