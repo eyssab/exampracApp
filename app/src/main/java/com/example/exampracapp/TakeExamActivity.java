@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -37,7 +38,10 @@ public class TakeExamActivity extends AppCompatActivity{
     private static String fileName;
     String finLine;
     ArrayList<Boolean> questionChecksArray;
+    ArrayList<Boolean> questionCorrectAnswersArray;
     boolean openingSave = false;
+    boolean isGrading = false;
+    double score;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +50,8 @@ public class TakeExamActivity extends AppCompatActivity{
         setContentView(R.layout.activity_take_exam);
 
         TextView titleView = findViewById(R.id.titleText);
+        Button saveBtn = findViewById(R.id.saveButton);
+        Button doneBtn = findViewById(R.id.doneButton);
 
         //Question overall scrollview
         scrollView = findViewById(R.id.pastExamScroll);
@@ -62,12 +68,20 @@ public class TakeExamActivity extends AppCompatActivity{
             title = bundle.getString("title");
             finOption = bundle.getString("finOption");
             fileName = bundle.getString("fileName");
+            isGrading = bundle.getBoolean("isGrading");
+        }
+
+        //Stuff to initialize when grading
+        if(isGrading) {
+            doneBtn.setText("Grade");
+            saveBtn.setText("Back");
         }
 
         //Opening saved file and generating exam
         if(fileName != null){
             openingSave = true;
             questionChecksArray = new ArrayList<>();
+            questionCorrectAnswersArray = new ArrayList<>();
             load(fileName);
 
             titleView.setText(title);
@@ -116,12 +130,12 @@ public class TakeExamActivity extends AppCompatActivity{
 
         //Generate answer button based on finOption
         for(int i = 0; i < answers;i++){
-            buttonS[i] = new answerButton( ((int) 'A' + i), new ToggleButton(this));
+            buttonS[i] = new answerButton( ((int) 'A' + i), new ToggleButton(this), false, isGrading);
             char number2Letter = (char)('A' + i);
             buttonS[i].getButton().setText(Character.toString(number2Letter));
             buttonS[i].getButton().setTextOn(Character.toString(number2Letter));
             buttonS[i].getButton().setTextOff(Character.toString(number2Letter));
-            if(openingSave) {
+            if(openingSave && !isGrading) {
                 buttonS[i].getButton().setChecked(questionChecksArray.get(i + answers * qNumber));
             }
             buttonS[i].getButton().setLayoutParams(new LinearLayout.LayoutParams((width-100)/answers, LinearLayout.LayoutParams.WRAP_CONTENT));
@@ -171,6 +185,7 @@ public class TakeExamActivity extends AppCompatActivity{
             while((line = br.readLine()) != null){
                 lineArray = line.split(",");
                 if (!isFirstLine) {
+                    //Write from txt file to questionChecksArray
                     for(int i = 0; i < answers; i++) {
                         questionChecksArray.add(Boolean.valueOf(lineArray[i]));
                     }
@@ -199,12 +214,40 @@ public class TakeExamActivity extends AppCompatActivity{
     }
 
     public void onSaveBtnClick(View view) {
-        finLine = title + "," + timerMins + "," + numQuestions + "," + answers + "\n";
-        for(int i = 0; i < numQuestions; i++){
-            addWholeString(i);
+        if(!isGrading) {
+            finLine = title + "," + timerMins + "," + numQuestions + "," + answers + "\n";
+            for (int i = 0; i < numQuestions; i++) {
+                addWholeString(i);
+            }
+            save(view);
+            openMainActivity();
+        }else{
+            openMainActivity();
         }
-        save(view);
-        openMainActivity();
+    }
+
+    public void gradeExam(){
+        //Build array of isChecked then compare the 2 arrays
+        for (int i = 0; i < numQuestions; i++) {
+            correctArrayBuilder(i);
+        }
+
+        //Accounts for multiple selections then grades
+        for(int i = 0;i < numQuestions; i++){
+            boolean qCorrect = false;
+            for(int z = 0; z < answers; z++) {
+                if ((questionCorrectAnswersArray.get(z+i*answers) == true && questionChecksArray.get(z+i*answers) == true)) {
+                    qCorrect = true;
+                }else if((questionCorrectAnswersArray.get(z+i*answers) == false && questionChecksArray.get(z+i*answers) == false)){
+                }else{
+                    qCorrect = false;
+                    z =answers;
+                }
+            }
+            if(qCorrect){
+                score++;
+            }
+        }
     }
 
     public void addWholeString(int i){
@@ -223,14 +266,33 @@ public class TakeExamActivity extends AppCompatActivity{
         finLine += allButtons + "\n";
     }
 
+    public void correctArrayBuilder(int i){
+        //Run through all of qArray and put all isCorrect values into one array for grading
+        for(int x = 0; x<answers; x++){
+                questionCorrectAnswersArray.add(qArray[i].getButtons()[x].getButton().isChecked());
+        }
+    }
+
     public void onDoneBtnClick(View view) {
         //Send all Data to each activity until it reaches home page
-        openActivity4();
+        if(!isGrading) {
+            finLine = title + "," + timerMins + "," + numQuestions + "," + answers + "\n";
+            for (int i = 0; i < numQuestions; i++) {
+                addWholeString(i);
+            }
+            save(view);
+            openGradingPicker();
+        }else{
+            gradeExam();
+            System.out.println(score);
+            openScoreViewActivity();
+        }
     }
 
     //Sending numQuestions, timerMins, title, and the whole questionArray for grading in next Activity
-    public void openActivity4() {
+    public void openGradingPicker() {
         Intent intent = new Intent(this, GradingPicker.class);
+        intent.putExtra("title", title);
         intent.putExtra("fileName", fileName);
         startActivity(intent);
     }
@@ -239,6 +301,13 @@ public class TakeExamActivity extends AppCompatActivity{
     public void openMainActivity() {
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra("title", title);
+        startActivity(intent);
+    }
+
+    public void openScoreViewActivity() {
+        Intent intent = new Intent(this, ScoreViewActivity.class);
+        intent.putExtra("title", title);
+        //intent.putExtra("score", score);
         startActivity(intent);
     }
 

@@ -35,7 +35,7 @@ public class GradingPicker extends AppCompatActivity {
             autoBtn.setChecked(false);
         }
         //SET TO ManualGradeActivity
-        class2Open = MainActivity.class;
+        class2Open = TakeExamActivity.class;
     }
 
     public void onAutoBtnDown(View view) {
@@ -49,6 +49,7 @@ public class GradingPicker extends AppCompatActivity {
     public void onNextBtnDown(View view) {
         Intent intent = new Intent(this, class2Open);
         intent.putExtra("fileName", fileName);
+        intent.putExtra("isGrading", true);
         startActivity(intent);
     }
 }

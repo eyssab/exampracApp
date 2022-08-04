@@ -10,10 +10,14 @@ import android.widget.ToggleButton;
 public class answerButton {
     int letterNumber;
     ToggleButton button;
+    boolean correct;
+    boolean isGrading;
 
-    public answerButton(int letterNumber, ToggleButton button) {
+    public answerButton(int letterNumber, ToggleButton button, boolean correct, boolean isGrading) {
         this.letterNumber = letterNumber;
         this.button = button;
+        this.correct = correct;
+        this.isGrading = isGrading;
     }
 
     public ToggleButton getButton() {
@@ -23,11 +27,23 @@ public class answerButton {
     public void onClick(View v) {
         if(!button.isChecked()) {
             button.setChecked(true);
-            System.out.println(button.toString());
+            if(isGrading){
+                correct = true;
+            }
         }else{
             button.setChecked(false);
-            System.out.println(button.toString());
+            if(isGrading){
+                correct = false;
+            }
         }
+    }
+
+    public boolean isGrading() {
+        return isGrading;
+    }
+
+    public void setGrading(boolean grading) {
+        isGrading = grading;
     }
 
     public void setButton(ToggleButton button) {
@@ -42,9 +58,21 @@ public class answerButton {
         this.letterNumber = letterNumber;
     }
 
+    public boolean isCorrect() {
+        return correct;
+    }
+
+    public void setCorrect(boolean correct) {
+        this.correct = correct;
+    }
+
     @Override
     public String toString() {
         //letterNumber can be converted to letter when reading file
         return button.isChecked() + ",";
+    }
+
+    public String correctToString(){
+        return isCorrect() + ",";
     }
 }
