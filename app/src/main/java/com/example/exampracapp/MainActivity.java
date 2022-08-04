@@ -3,17 +3,31 @@ package com.example.exampracapp;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import android.widget.TextView;
+
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 public class MainActivity extends AppCompatActivity {
 
     ScrollView scrollView;
     LinearLayout linearLayout;
+    LinearLayout innerLinearLayout;
+
+    String fileTitle;
+    int width = Resources.getSystem().getDisplayMetrics().widthPixels;
+
+    Double fileScore;
+    TextView scoreView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,13 +58,60 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void addPastExam(String title){
+        innerLinearLayout = new LinearLayout(this);
+        innerLinearLayout.setOrientation(LinearLayout.HORIZONTAL);
+        load(title);
         Button but = new Button(this);
-        but.setText(title.substring(0,title.length()-4));
-        linearLayout.addView(but);
+        if(fileScore == -1){
+            but.setLayoutParams(new LinearLayout.LayoutParams((int) ((int)width/1.7), LinearLayout.LayoutParams.WRAP_CONTENT));
+            but.setText(title.substring(0,title.length()-4));
+            innerLinearLayout.addView(but);
+        }else {
+            scoreView = new TextView(this);
+            scoreView.setText(String.valueOf(Math.round(fileScore)) + "%");
+            but.setLayoutParams(new LinearLayout.LayoutParams((int) ((int)width/1.9), LinearLayout.LayoutParams.WRAP_CONTENT));
+            but.setText(title.substring(0, title.length() - 4));
+            innerLinearLayout.addView(but);
+            innerLinearLayout.addView(scoreView);
+        }
+        linearLayout.addView(innerLinearLayout);
         but.setOnClickListener(v -> {
-            System.out.println(title);
             openActivity3(title);
         });
+    }
+
+    public void load(String fileName) {
+        FileInputStream fis = null;
+
+        try {
+            fis = openFileInput(fileName);
+            InputStreamReader isr = new InputStreamReader(fis);
+            BufferedReader br = new BufferedReader(isr);
+
+            //Get title and score of a file given fileName
+
+            String line;
+            String[] lineArray;
+
+            boolean firstLine = true;
+            while((line = br.readLine()) != null && firstLine) {
+                lineArray = line.split(",");
+                fileTitle = lineArray[0];
+                fileScore = Double.valueOf(lineArray[4]);
+                System.out.println(Double.valueOf(lineArray[4]) + "sus");
+                firstLine = false;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally{
+            if (fis != null) {
+                try {
+                    fis.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     public void openActivity2() {

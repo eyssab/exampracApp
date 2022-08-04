@@ -41,7 +41,7 @@ public class TakeExamActivity extends AppCompatActivity{
     ArrayList<Boolean> questionCorrectAnswersArray;
     boolean openingSave = false;
     boolean isGrading = false;
-    double score;
+    double score = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -215,7 +215,7 @@ public class TakeExamActivity extends AppCompatActivity{
 
     public void onSaveBtnClick(View view) {
         if(!isGrading) {
-            finLine = title + "," + timerMins + "," + numQuestions + "," + answers + "\n";
+            finLine = title + "," + timerMins + "," + numQuestions + "," + answers + "," + score + "\n";
             for (int i = 0; i < numQuestions; i++) {
                 addWholeString(i);
             }
@@ -276,7 +276,7 @@ public class TakeExamActivity extends AppCompatActivity{
     public void onDoneBtnClick(View view) {
         //Send all Data to each activity until it reaches home page
         if(!isGrading) {
-            finLine = title + "," + timerMins + "," + numQuestions + "," + answers + "\n";
+            finLine = title + "," + timerMins + "," + numQuestions + "," + answers + "," + score + "\n";
             for (int i = 0; i < numQuestions; i++) {
                 addWholeString(i);
             }
@@ -284,6 +284,12 @@ public class TakeExamActivity extends AppCompatActivity{
             openGradingPicker();
         }else{
             gradeExam();
+            score = score/(double)numQuestions * 100;
+            finLine = title + "," + timerMins + "," + numQuestions + "," + answers + "," + score + "\n";
+            for (int i = 0; i < numQuestions; i++) {
+                addWholeString(i);
+            }
+            save(view);
             System.out.println(score);
             openScoreViewActivity();
         }
@@ -307,7 +313,7 @@ public class TakeExamActivity extends AppCompatActivity{
     public void openScoreViewActivity() {
         Intent intent = new Intent(this, ScoreViewActivity.class);
         intent.putExtra("title", title);
-        intent.putExtra("score", score/(double)numQuestions * 100);
+        intent.putExtra("score", score);
         startActivity(intent);
     }
 
