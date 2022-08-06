@@ -237,9 +237,10 @@ public class TakeExamActivity extends AppCompatActivity{
         for(int i = 0;i < numQuestions; i++){
             boolean qCorrect = false;
             for(int z = 0; z < answers; z++) {
-                if ((questionCorrectAnswersArray.get(z+i*answers) == true && questionChecksArray.get(z+i*answers) == true)) {
+                if ((questionCorrectAnswersArray.get(z + i * answers) && questionChecksArray.get(z + i * answers))) {
                     qCorrect = true;
-                }else if((questionCorrectAnswersArray.get(z+i*answers) == false && questionChecksArray.get(z+i*answers) == false)){
+                }else if((!questionCorrectAnswersArray.get(z + i * answers) && !questionChecksArray.get(z + i * answers))){
+                    //Do nothing
                 }else{
                     qCorrect = false;
                     z =answers;

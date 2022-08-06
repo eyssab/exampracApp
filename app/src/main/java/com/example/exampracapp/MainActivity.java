@@ -7,8 +7,6 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
-import android.content.res.Resources;
-import android.media.MediaRouter;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -21,10 +19,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
-
-    RecyclerView scrollView;
 
     String fileTitle;
     Double curScore;
@@ -49,8 +46,12 @@ public class MainActivity extends AppCompatActivity {
         //Show past exams by looking at files directory
         file = new File("/data/user/0/com.example.exampracapp/files");
         arr = file.list();
-        scores = new ArrayList<Double>(arr.length);
-        fileArr = new ArrayList<String>(arr.length);
+        if (arr != null) {
+            scores = new ArrayList<>(arr.length);
+        }
+        if (arr != null) {
+            fileArr = new ArrayList<>(arr.length);
+        }
         if(arr != null) {
             for (int i = 0; i < arr.length; i++) {
                 String s = arr[i];
@@ -73,7 +74,6 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.addOnItemTouchListener(
                 new RecyclerItemClickListener(this, recyclerView ,new RecyclerItemClickListener.OnItemClickListener() {
                     @Override public void onItemClick(View view, int position) {
-                        System.out.println(fileArr.get(position));
                         openActivity3(fileArr.get(position) + ".txt");
                     }
 
@@ -95,11 +95,10 @@ public class MainActivity extends AppCompatActivity {
             snackbar.show();
 
             File filee = new File("/data/user/0/com.example.exampracapp/files/" + fileArr.get(viewHolder.getAdapterPosition()) + ".txt");
-            System.out.println(filee);
             filee.delete();
             fileArr.remove(viewHolder.getAdapterPosition());
             scores.remove(viewHolder.getAdapterPosition());
-            recyclerView.getAdapter().notifyDataSetChanged();
+            Objects.requireNonNull(recyclerView.getAdapter()).notifyDataSetChanged();
         }
     };
 
@@ -125,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
             while((line = br.readLine()) != null && firstLine) {
                 lineArray = line.split(",");
                 fileTitle = lineArray[0];
-                curScore = Double.valueOf(lineArray[3]);
+                curScore = Double.valueOf(lineArray[4]);
                 firstLine = false;
             }
         } catch (IOException e) {
