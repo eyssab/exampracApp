@@ -85,6 +85,7 @@ public class TakeExamActivity extends AppCompatActivity{
             load(fileName);
 
             titleView.setText(title);
+            System.out.println(title);
             for (int i = 0; i < qArray.length; i++) {
                 qArray[i] = new Question(i + 1, 0, null);
                 addQuestion(qArray[i], i);

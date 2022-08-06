@@ -40,24 +40,14 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
         return this.fileName.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public static class ViewHolder extends RecyclerView.ViewHolder{
         private Button fileBtn;
         private TextView score;
 
         public ViewHolder(View view) {
             super(view);
-            view.setOnClickListener(this);
             this.fileBtn = view.findViewById(R.id.fileBtn);
             this.score = view.findViewById(R.id.score);
-        }
-
-        @Override
-        public void onClick(View view) {
-            Toast.makeText(view.getContext(), "position : " + getLayoutPosition() + " text : " + this.score.getText(), Toast.LENGTH_SHORT).show();
-            Toast.makeText(view.getContext(), "position : " + getLayoutPosition() + " text : " + this.score.getText(), Toast.LENGTH_SHORT).show();
-            //Intent intent = new Intent(this, TakeExamActivity.class);
-            //intent.putExtra("fileName", title);
-            //startActivity(intent);
         }
     }
 }

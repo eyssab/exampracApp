@@ -55,7 +55,6 @@ public class MainActivity extends AppCompatActivity {
             for (int i = 0; i < arr.length; i++) {
                 String s = arr[i];
                 if (s.endsWith(".txt")) {
-                    //System.out.println(s);
                     load(s);
                     fileArr.add(fileTitle);
                     scores.add(curScore);
@@ -65,8 +64,23 @@ public class MainActivity extends AppCompatActivity {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         new ItemTouchHelper(callback).attachToRecyclerView(recyclerView);
+
+
         recyclerView.setAdapter(new CustomAdapter(fileArr,scores));
         recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+
+        //onClick recyclerView
+        recyclerView.addOnItemTouchListener(
+                new RecyclerItemClickListener(this, recyclerView ,new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override public void onItemClick(View view, int position) {
+                        System.out.println(fileArr.get(position));
+                        openActivity3(fileArr.get(position) + ".txt");
+                    }
+
+                    @Override public void onLongItemClick(View view, int position) {
+                        // do whatever
+                    }
+                }));
     }
 
     ItemTouchHelper.SimpleCallback callback = new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
@@ -74,7 +88,6 @@ public class MainActivity extends AppCompatActivity {
         public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
             return false;
         }
-
 
         @Override
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
@@ -90,6 +103,8 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+
+
     public void onNewExamBtnClick(View view) {
         openActivity2();
     }
@@ -103,7 +118,6 @@ public class MainActivity extends AppCompatActivity {
             BufferedReader br = new BufferedReader(isr);
 
             //Get title and score of a file given fileName
-//dsr
             String line;
             String[] lineArray;
 
@@ -129,6 +143,12 @@ public class MainActivity extends AppCompatActivity {
 
     public void openActivity2() {
         Intent intent = new Intent(this, GenerateExamActivity.class);
+        startActivity(intent);
+    }
+
+    public void openActivity3(String title) {
+        Intent intent = new Intent(this, TakeExamActivity.class);
+        intent.putExtra("fileName", title);
         startActivity(intent);
     }
 }
