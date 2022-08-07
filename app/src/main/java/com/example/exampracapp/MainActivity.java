@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        //sorting itemss
+        //sorting items
         for (int i = 0; i < fileSplit.size() - 1; i++)
             for (int j = 0; j < fileSplit.size() - i - 1; j++)
                 if (fileSplit.get(j).getCurTimee() < fileSplit.get(j + 1).getCurTimee()) {
