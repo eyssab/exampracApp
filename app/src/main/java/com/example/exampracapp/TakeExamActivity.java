@@ -6,6 +6,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -20,16 +21,20 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 public class TakeExamActivity extends AppCompatActivity{
 
+    //QUESTION LAYOUT
     ScrollView scrollView;
     LinearLayout linearLayout;
+    Button saveBtn;
+    Button doneBtn;
+    TextView titleView;
 
-    //Array of Questions to each hold(questionNumber, selectedLetter, and correctLetter)
+    //QUESTION GENERATION
     Question[] qArray;
     int numQuestions;
-    int timerMins;
     String title;
     String finOption;
     int answers;
@@ -44,15 +49,27 @@ public class TakeExamActivity extends AppCompatActivity{
     boolean isGrading = false;
     double score = 0;
 
+    //TIMER
+    CountDownTimer countDownTimer;
+    long timeLeftInMilliseconds;
+    boolean timerRunning;
+    TextView timerText;
+    Button pauseBtn;
+    private View view;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //auto generated code
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_take_exam);
 
-        TextView titleView = findViewById(R.id.titleText);
-        Button saveBtn = findViewById(R.id.saveButton);
-        Button doneBtn = findViewById(R.id.doneButton);
+        //INITIALIZING VIEWS
+        titleView = findViewById(R.id.titleText);
+        saveBtn = findViewById(R.id.saveButton);
+        doneBtn = findViewById(R.id.doneButton);
+        timerText = findViewById(R.id.timerText);
+        pauseBtn = findViewById(R.id.pauseBtn);
 
         //Question overall scrollview
         scrollView = findViewById(R.id.pastExamScroll);
@@ -65,7 +82,8 @@ public class TakeExamActivity extends AppCompatActivity{
         Bundle bundle = intent.getExtras();
         if(bundle != null) {
             numQuestions = bundle.getInt("numQuestions");
-            timerMins = bundle.getInt("timerMins");
+            timeLeftInMilliseconds = TimeUnit.MINUTES.toMillis(bundle.getInt("timerMins"));
+            System.out.println(timeLeftInMilliseconds);
             title = bundle.getString("title");
             finOption = bundle.getString("finOption");
             fileName = bundle.getString("fileName");
@@ -76,6 +94,10 @@ public class TakeExamActivity extends AppCompatActivity{
         if(isGrading) {
             doneBtn.setText("Grade");
             saveBtn.setText("Back");
+            pauseBtn.setWidth(0);
+            pauseBtn.setHeight(0);
+            timerText.setWidth(0);
+            timerText.setHeight(0);
         }
 
         //Opening saved file and generating exam
@@ -84,6 +106,8 @@ public class TakeExamActivity extends AppCompatActivity{
             questionChecksArray = new ArrayList<>();
             questionCorrectAnswersArray = new ArrayList<>();
             load(fileName);
+            int seconds = (int) timeLeftInMilliseconds%60000 / 1000;
+            timerText.setText(String.valueOf(timeLeftInMilliseconds/60000) + ":" + seconds);
 
             titleView.setText(title);
             System.out.println(title);
@@ -195,7 +219,7 @@ public class TakeExamActivity extends AppCompatActivity{
                     //Parse first line for data
                     lineArray = line.split(",");
                     title = lineArray[0];
-                    timerMins = Integer.parseInt(lineArray[1]);
+                    timeLeftInMilliseconds = Long.parseLong(lineArray[1]);
                     numQuestions = Integer.parseInt(lineArray[2]);
                     answers = Integer.parseInt(lineArray[3]);
                     qArray = new Question[numQuestions];
@@ -217,7 +241,7 @@ public class TakeExamActivity extends AppCompatActivity{
 
     public void onSaveBtnClick(View view) {
         if(!isGrading) {
-            finLine = title + "," + timerMins + "," + numQuestions + "," + answers + "," + score + "," + (int) (new Date().getTime()/1000) + "," + "\n";
+            finLine = title + "," + timeLeftInMilliseconds + "," + numQuestions + "," + answers + "," + score + "," + (int) (new Date().getTime()/1000) + "," + "\n";
             for (int i = 0; i < numQuestions; i++) {
                 addWholeString(i);
             }
@@ -277,9 +301,9 @@ public class TakeExamActivity extends AppCompatActivity{
     }
 
     public void onDoneBtnClick(View view) {
-        //Send all Data to each activity until it reaches home page
+        //IF GRADING COMPUTE SCORE ELSE OPEN GRADING PICKER TO GRADE EXAM
         if(!isGrading) {
-            finLine = title + "," + timerMins + "," + numQuestions + "," + answers + "," + score + "," + (int) (new Date().getTime()/1000) + "," + "\n";
+            finLine = title + "," + timeLeftInMilliseconds + "," + numQuestions + "," + answers + "," + score + "," + (int) (new Date().getTime()/1000) + "," + "\n";
             for (int i = 0; i < numQuestions; i++) {
                 addWholeString(i);
             }
@@ -288,7 +312,7 @@ public class TakeExamActivity extends AppCompatActivity{
         }else{
             gradeExam();
             score = score/(double)numQuestions * 100;
-            finLine = title + "," + timerMins + "," + numQuestions + "," + answers + "," + score + "," + (int) (new Date().getTime()/1000) + "," + "\n";
+            finLine = title + "," + timeLeftInMilliseconds + "," + numQuestions + "," + answers + "," + score + "," + (int) (new Date().getTime()/1000) + "," + "\n";
             for (int i = 0; i < numQuestions; i++) {
                 addWholeString(i);
             }
@@ -296,6 +320,10 @@ public class TakeExamActivity extends AppCompatActivity{
             System.out.println(score);
             openScoreViewActivity();
         }
+    }
+
+    public void callDoneBtnClick(){
+        onDoneBtnClick(view);
     }
 
     //Sending numQuestions, timerMins, title, and the whole questionArray for grading in next Activity
@@ -320,4 +348,51 @@ public class TakeExamActivity extends AppCompatActivity{
         startActivity(intent);
     }
 
+    public void onPauseBtnClick(View view) {
+        System.out.println(timeLeftInMilliseconds);
+        if(timerRunning){
+            stopTimer();
+        }else{
+            startTimer();
+        }
+    }
+
+    public void startTimer(){
+        countDownTimer = new CountDownTimer(timeLeftInMilliseconds, 1000) {
+            @Override
+            public void onTick(long l) {
+                timeLeftInMilliseconds -= 1000;
+                updateTimer();
+            }
+
+            @Override
+            public void onFinish() {
+                callDoneBtnClick();
+            }
+        }.start();
+
+        pauseBtn.setText("PAUSE");
+        timerRunning = true;
+    }
+
+    public void stopTimer() {
+        countDownTimer.cancel();
+        pauseBtn.setText("RESUME");
+        timerRunning = false;
+    }
+
+    public void updateTimer() {
+        int minutes = (int) timeLeftInMilliseconds / 60000;
+        int seconds = (int) timeLeftInMilliseconds % 60000 / 1000;
+
+        String timeLeftText;
+
+        timeLeftText = "" + minutes + ":";
+        if(seconds < 10) {
+            timeLeftText += "0";
+        }
+        timeLeftText += seconds;
+
+        timerText.setText(timeLeftText);
+    }
 }
