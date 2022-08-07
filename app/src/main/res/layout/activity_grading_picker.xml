@@ -20,47 +20,30 @@
         app:layout_constraintVertical_bias="0.85" />
 
     <ToggleButton
-        android:id="@+id/autoGradeSelection"
-        android:layout_width="256dp"
-        android:layout_height="65dp"
-        android:text="Auto Grade(answer key PDF)"
-        android:textOff="Auto Grade(answer key PDF)"
-        android:textOn="Auto Grade(answer key PDF)"
-        android:textSize="15dp"
-        android:onClick="onAutoBtnDown"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.339" />
-
-    <ToggleButton
         android:id="@+id/manualGradeSelection"
         android:layout_width="256dp"
         android:layout_height="65dp"
+        android:onClick="onManualBtnDown"
         android:text="Manual Grade"
         android:textOff="Manual Grade"
         android:textOn="Manual Grade"
         android:textSize="15dp"
-        android:onClick="onManualBtnDown"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.456" />
+        app:layout_constraintVertical_bias="0.302" />
 
     <TextView
         android:id="@+id/selectViewText"
         android:layout_width="257dp"
         android:layout_height="34dp"
-        android:text="Select View"
+        android:text="Select Grading Option"
         android:textAlignment="center"
         android:textSize="25dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.454"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.21" />

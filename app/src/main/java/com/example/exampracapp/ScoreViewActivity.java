@@ -25,7 +25,7 @@ public class ScoreViewActivity extends AppCompatActivity {
         }
 
         TextView scoreText = findViewById(R.id.scoreText);
-        scoreText.setText(String.valueOf(score) + "%");
+        scoreText.setText(String.valueOf(score.intValue()) + "%");
     }
 
     public void onReturnBtnDown(View view) {

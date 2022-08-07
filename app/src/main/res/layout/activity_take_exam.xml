@@ -75,7 +75,7 @@
         android:layout_width="45dp"
         android:layout_height="50dp"
         android:adjustViewBounds="true"
-        android:alpha=".75"
+        android:alpha=".99"
         android:background="?android:selectableItemBackground"
         android:onClick="onPauseBtnClick"
         android:scaleType="fitCenter"

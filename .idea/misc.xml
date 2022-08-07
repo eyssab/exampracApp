@@ -5,8 +5,8 @@
       <map>
         <entry key="..\:/Users/eyssa/Documents/exampracApp/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.2195" />
         <entry key="..\:/Users/eyssa/Documents/exampracApp/app/src/main/res/drawable/ic_launcher_background.xml" value="0.2195" />
-        <entry key="..\:/Users/eyssa/Documents/exampracApp/app/src/main/res/layout/activity_generate_exam.xml" value="0.1" />
-        <entry key="..\:/Users/eyssa/Documents/exampracApp/app/src/main/res/layout/activity_grading_picker.xml" value="0.1" />
+        <entry key="..\:/Users/eyssa/Documents/exampracApp/app/src/main/res/layout/activity_generate_exam.xml" value="0.25" />
+        <entry key="..\:/Users/eyssa/Documents/exampracApp/app/src/main/res/layout/activity_grading_picker.xml" value="0.33" />
         <entry key="..\:/Users/eyssa/Documents/exampracApp/app/src/main/res/layout/activity_main.xml" value="0.35260416666666666" />
         <entry key="..\:/Users/eyssa/Documents/exampracApp/app/src/main/res/layout/activity_manual_grade.xml" value="0.18802083333333333" />
         <entry key="..\:/Users/eyssa/Documents/exampracApp/app/src/main/res/layout/activity_score_view.xml" value="0.33" />

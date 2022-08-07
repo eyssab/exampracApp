@@ -19,7 +19,7 @@ public class GradingPicker extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_grading_picker);
-        autoBtn = findViewById(R.id.autoGradeSelection);
+        //autoBtn = findViewById(R.id.autoGradeSelection);
         manualBtn  = findViewById(R.id.manualGradeSelection);
 
         Intent intent = getIntent();
@@ -31,9 +31,6 @@ public class GradingPicker extends AppCompatActivity {
 
 
     public void onManualBtnDown(View view) {
-        if(autoBtn.isChecked()) {
-            autoBtn.setChecked(false);
-        }
         //SET TO ManualGradeActivity
         class2Open = TakeExamActivity.class;
     }
