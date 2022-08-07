@@ -23,13 +23,10 @@ import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
-    String fileTitle;
-    Double curScore;
 
     File file;
     String[] arr;
-    ArrayList<String> fileArr;
-    ArrayList<Double> scores;
+    ArrayList<fileParts> fileSplit = new ArrayList<>();
     RecyclerView recyclerView;
 
     LinearLayout linearLayout;
@@ -46,35 +43,35 @@ public class MainActivity extends AppCompatActivity {
         //Show past exams by looking at files directory
         file = new File("/data/user/0/com.example.exampracapp/files");
         arr = file.list();
-        if (arr != null) {
-            scores = new ArrayList<>(arr.length);
-        }
-        if (arr != null) {
-            fileArr = new ArrayList<>(arr.length);
-        }
         if(arr != null) {
             for (int i = 0; i < arr.length; i++) {
                 String s = arr[i];
                 if (s.endsWith(".txt")) {
                     load(s);
-                    fileArr.add(fileTitle);
-                    scores.add(curScore);
                 }
             }
         }
 
+        //sorting items
+        for (int i = 0; i < fileSplit.size() - 1; i++)
+            for (int j = 0; j < fileSplit.size() - i - 1; j++)
+                if (fileSplit.get(j).getCurTimee() < fileSplit.get(j + 1).getCurTimee()) {
+                    fileParts temp = fileSplit.get(j);
+                    fileSplit.set(j, fileSplit.get(j + 1));
+                    fileSplit.set(j + 1, temp);
+                }
+
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         new ItemTouchHelper(callback).attachToRecyclerView(recyclerView);
 
-
-        recyclerView.setAdapter(new CustomAdapter(fileArr,scores));
+        recyclerView.setAdapter(new CustomAdapter(fileSplit));
         recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
 
         //onClick recyclerView
         recyclerView.addOnItemTouchListener(
                 new RecyclerItemClickListener(this, recyclerView ,new RecyclerItemClickListener.OnItemClickListener() {
                     @Override public void onItemClick(View view, int position) {
-                        openActivity3(fileArr.get(position) + ".txt");
+                        openActivity3(fileSplit.get(position).getFileTitle() + ".txt");
                     }
 
                     @Override public void onLongItemClick(View view, int position) {
@@ -94,10 +91,9 @@ public class MainActivity extends AppCompatActivity {
             Snackbar snackbar = Snackbar.make(recyclerView, "Item Deleted", Snackbar.LENGTH_LONG);
             snackbar.show();
 
-            File filee = new File("/data/user/0/com.example.exampracapp/files/" + fileArr.get(viewHolder.getAdapterPosition()) + ".txt");
+            File filee = new File("/data/user/0/com.example.exampracapp/files/" + fileSplit.get(viewHolder.getAdapterPosition()).getFileTitle() + ".txt");
             filee.delete();
-            fileArr.remove(viewHolder.getAdapterPosition());
-            scores.remove(viewHolder.getAdapterPosition());
+            fileSplit.remove(viewHolder.getAdapterPosition());
             Objects.requireNonNull(recyclerView.getAdapter()).notifyDataSetChanged();
         }
     };
@@ -123,8 +119,7 @@ public class MainActivity extends AppCompatActivity {
             boolean firstLine = true;
             while((line = br.readLine()) != null && firstLine) {
                 lineArray = line.split(",");
-                fileTitle = lineArray[0];
-                curScore = Double.valueOf(lineArray[4]);
+                fileSplit.add(new fileParts(lineArray[0], Double.valueOf(lineArray[4]), Integer.parseInt(lineArray[5])));
                 firstLine = false;
             }
         } catch (IOException e) {

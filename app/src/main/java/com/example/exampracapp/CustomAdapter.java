@@ -16,11 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder> {
-    private ArrayList<String> fileName;
-    private ArrayList<Double> score;
-    public CustomAdapter (ArrayList<String> fileName, ArrayList<Double> score){
-        this.fileName = fileName;
-        this.score = score;
+    private ArrayList<fileParts> fileParts;
+    public CustomAdapter (ArrayList<fileParts> fileParts){
+        this.fileParts = fileParts;
     }
 
     @Override
@@ -31,14 +29,14 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(CustomAdapter.ViewHolder holder, int position) {
-        holder.fileBtn.setText(fileName.get(position));
-        int intScore = score.get(position).intValue();
+        holder.fileBtn.setText(fileParts.get(position).getFileTitle());
+        int intScore = fileParts.get(position).getCurScore().intValue();
         holder.score.setText(intScore + "%");
     }
 
     @Override
     public int getItemCount() {
-        return this.fileName.size();
+        return this.fileParts.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{

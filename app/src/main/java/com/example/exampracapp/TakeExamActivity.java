@@ -19,6 +19,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class TakeExamActivity extends AppCompatActivity{
 
@@ -216,7 +217,7 @@ public class TakeExamActivity extends AppCompatActivity{
 
     public void onSaveBtnClick(View view) {
         if(!isGrading) {
-            finLine = title + "," + timerMins + "," + numQuestions + "," + answers + "," + score + "\n";
+            finLine = title + "," + timerMins + "," + numQuestions + "," + answers + "," + score + "," + (int) (new Date().getTime()/1000) + "," + "\n";
             for (int i = 0; i < numQuestions; i++) {
                 addWholeString(i);
             }
@@ -278,7 +279,7 @@ public class TakeExamActivity extends AppCompatActivity{
     public void onDoneBtnClick(View view) {
         //Send all Data to each activity until it reaches home page
         if(!isGrading) {
-            finLine = title + "," + timerMins + "," + numQuestions + "," + answers + "," + score + "\n";
+            finLine = title + "," + timerMins + "," + numQuestions + "," + answers + "," + score + "," + (int) (new Date().getTime()/1000) + "," + "\n";
             for (int i = 0; i < numQuestions; i++) {
                 addWholeString(i);
             }
@@ -287,7 +288,7 @@ public class TakeExamActivity extends AppCompatActivity{
         }else{
             gradeExam();
             score = score/(double)numQuestions * 100;
-            finLine = title + "," + timerMins + "," + numQuestions + "," + answers + "," + score + "\n";
+            finLine = title + "," + timerMins + "," + numQuestions + "," + answers + "," + score + "," + (int) (new Date().getTime()/1000) + "," + "\n";
             for (int i = 0; i < numQuestions; i++) {
                 addWholeString(i);
             }
