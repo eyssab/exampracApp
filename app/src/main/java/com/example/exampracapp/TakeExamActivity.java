@@ -50,7 +50,7 @@ public class TakeExamActivity extends AppCompatActivity{
     ArrayList<Boolean> questionCorrectAnswersArray;
     boolean openingSave = false;
     boolean isGrading = false;
-    double score = 0;
+    double score;
 
     //TIMER
     CountDownTimer countDownTimer;
@@ -107,11 +107,11 @@ public class TakeExamActivity extends AppCompatActivity{
             questionChecksArray = new ArrayList<>();
             questionCorrectAnswersArray = new ArrayList<>();
             load(fileName);
+
             int seconds = (int) timeLeftInMilliseconds%60000 / 1000;
             timerText.setText(String.valueOf(timeLeftInMilliseconds/60000) + ":" + seconds);
+            titleView.setText(title.replaceAll("_", " "));
 
-            titleView.setText(title);
-            System.out.println(title);
             for (int i = 0; i < qArray.length; i++) {
                 qArray[i] = new Question(i + 1, 0, null);
                 addQuestion(qArray[i], i);
@@ -120,9 +120,11 @@ public class TakeExamActivity extends AppCompatActivity{
         }else {
             //Generating new exam from scratch
             fileName = title + ".txt";
+            int seconds = (int) timeLeftInMilliseconds%60000 / 1000;
+            timerText.setText(String.valueOf(timeLeftInMilliseconds/60000) + ":" + seconds);
 
             //Setting Title
-            titleView.setText(title);
+            titleView.setText(title.replaceAll("_", " "));
 
             //find amount of answer choices needed and assigned to int answers
             char finOptionchar = finOption.charAt(0);
@@ -222,6 +224,9 @@ public class TakeExamActivity extends AppCompatActivity{
                     title = lineArray[0];
                     timeLeftInMilliseconds = Long.parseLong(lineArray[1]);
                     numQuestions = Integer.parseInt(lineArray[2]);
+                    if(!isGrading) {
+                        score = Double.parseDouble(lineArray[4]);
+                    }
                     answers = Integer.parseInt(lineArray[3]);
                     qArray = new Question[numQuestions];
                     isFirstLine = false;

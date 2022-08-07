@@ -29,7 +29,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(CustomAdapter.ViewHolder holder, int position) {
-        holder.fileBtn.setText(fileParts.get(position).getFileTitle());
+        holder.fileBtn.setText(fileParts.get(position).getFileTitle().replaceAll("_", " "));
         int intScore = fileParts.get(position).getCurScore().intValue();
         holder.score.setText(intScore + "%");
     }
