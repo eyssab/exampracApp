@@ -1,14 +1,17 @@
 package com.example.exampracapp;
 
+import androidx.annotation.DrawableRes;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -54,7 +57,7 @@ public class TakeExamActivity extends AppCompatActivity{
     long timeLeftInMilliseconds;
     boolean timerRunning;
     TextView timerText;
-    Button pauseBtn;
+    ImageButton pauseBtn;
     private View view;
 
 
@@ -94,10 +97,8 @@ public class TakeExamActivity extends AppCompatActivity{
         if(isGrading) {
             doneBtn.setText("Grade");
             saveBtn.setText("Back");
-            pauseBtn.setWidth(0);
-            pauseBtn.setHeight(0);
-            timerText.setWidth(0);
-            timerText.setHeight(0);
+            pauseBtn.setVisibility(View.GONE);
+            timerText.setVisibility(View.GONE);
         }
 
         //Opening saved file and generating exam
@@ -367,17 +368,17 @@ public class TakeExamActivity extends AppCompatActivity{
 
             @Override
             public void onFinish() {
-                callDoneBtnClick();
+
             }
         }.start();
 
-        pauseBtn.setText("PAUSE");
+        pauseBtn.setImageResource(R.drawable.pause);
         timerRunning = true;
     }
 
     public void stopTimer() {
         countDownTimer.cancel();
-        pauseBtn.setText("RESUME");
+        pauseBtn.setImageResource(R.drawable.play);
         timerRunning = false;
     }
 
@@ -386,6 +387,10 @@ public class TakeExamActivity extends AppCompatActivity{
         int seconds = (int) timeLeftInMilliseconds % 60000 / 1000;
 
         String timeLeftText;
+
+        if(timeLeftInMilliseconds == 0001){
+            callDoneBtnClick();
+        }
 
         timeLeftText = "" + minutes + ":";
         if(seconds < 10) {
