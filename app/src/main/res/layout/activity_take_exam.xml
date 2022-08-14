@@ -79,7 +79,7 @@
         android:background="?android:selectableItemBackground"
         android:onClick="onPauseBtnClick"
         android:scaleType="fitCenter"
-        android:src="@drawable/play"
+        android:src="@drawable/playo"
         android:text="START"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

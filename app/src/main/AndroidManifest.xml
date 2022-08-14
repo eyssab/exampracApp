@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.exampracapp">
+    package="com.easygrader.exampracapp">
 
     <application
         android:allowBackup="true"
@@ -14,19 +14,19 @@
         android:theme="@style/AppTheme.NoActionBar"
         tools:targetApi="31">
         <activity
-            android:name=".ScoreViewActivity"
+            android:name="com.easygrader.exampracapp.ScoreViewActivity"
             android:exported="false" />
         <activity
-            android:name=".GradingPicker"
+            android:name="com.easygrader.exampracapp.GradingPicker"
             android:exported="false" />
         <activity
-            android:name=".TakeExamActivity"
+            android:name="com.easygrader.exampracapp.TakeExamActivity"
             android:exported="false" />
         <activity
-            android:name=".GenerateExamActivity"
+            android:name="com.easygrader.exampracapp.GenerateExamActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name="com.easygrader.exampracapp.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
